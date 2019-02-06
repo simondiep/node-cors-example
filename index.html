@@ -1,0 +1,29 @@
+<script>
+  fetch("http://localhost:3000/message").then(resp => resp.json()).then(resp => {
+    document.getElementById("response").innerHTML=resp;
+  });
+
+  function submitMessage() {
+    const message = document.getElementById("inputMessage").value;
+    fetch("http://localhost:3000/message", {
+      method: 'POST',
+      body: JSON.stringify({ message }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then(resp => 
+      fetch("http://localhost:3000/message").then(resp => resp.json()).then(resp => {
+        document.getElementById("response").innerHTML=resp;
+    }));
+  }
+</script>
+<div>
+  <span>CORS Example</span>
+  <br/>
+  <br/>
+  <input id="inputMessage" type="text" placeholder="Type a message"/>
+  <button onclick="submitMessage()">Submit Message</button>
+  <br/>
+  <br/>
+  <div id="response"></div>
+</div>
