@@ -7,12 +7,17 @@ const messages = ['hi there'];
 
 server.use(express.static('.'));
 
-const accessControlAllowedOrigin = 'http://127.0.0.1:8080';
-server.options(accessControlAllowedOrigin, cors()) // allow preflight requests
-server.use(cors({
-  methods: ['GET', 'POST',],
-  origin: accessControlAllowedOrigin,
-}));
+const startupArgs = process.argv.slice(2);
+const enableCors = startupArgs && startupArgs.includes('cors');
+
+if (enableCors) {
+  const accessControlAllowedOrigin = 'http://127.0.0.1:8080';
+  server.options(accessControlAllowedOrigin, cors()) // allow preflight requests
+  server.use(cors({
+    methods: ['GET', 'POST',],
+    origin: accessControlAllowedOrigin,
+  }));
+}
 
 server.use(bodyParser.urlencoded({
   extended: true

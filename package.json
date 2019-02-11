@@ -5,8 +5,10 @@
   "main": "server.js",
   "scripts": {
     "start-web-app": "node node_modules/http-server/bin/http-server",
-    "start-web-app-blocked": "node node_modules/http-server/bin/http-server -p 6666",
-    "start-server": "node server.js"
+    "start-web-app-blocked": "node node_modules/http-server/bin/http-server -p 9999",
+    "start-server-no-cors": "node server.js",
+    "start-server-with-cors": "node server.js cors",
+    "start": "npm run start-server-no-cors"
   },
   "keywords": [],
   "author": "",
