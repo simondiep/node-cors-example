@@ -1,20 +1,48 @@
+<style>
+  body {
+    font-size: 36px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  button,
+  input[type='text'],
+  legend {
+    font-size: 24px;
+  }
+</style>
 <script>
-  fetch("http://localhost:3000/message").then(resp => resp.json()).then(resp => {
-    document.getElementById("response").innerHTML=resp;
+  const messageListUrl = "http://localhost:3000/message";
+  
+  function createResponseElementList(contents) {
+    const ul = document.createElement('ul');
+    for (const content of contents) {
+      const li = document.createElement('li');
+      li.innerHTML = content;
+      ul.appendChild(li);
+    }
+    return ul.outerHTML;
+  }
+
+  fetch(messageListUrl).then(resp => resp.json()).then(resp => {
+    document.getElementById("response").innerHTML=createResponseElementList(resp);
   });
 
-  function submitMessage() {
+  function submitMessage(asJson) {
     const message = document.getElementById("inputMessage").value;
-    fetch("http://localhost:3000/message", {
+    document.getElementById("responseDebug").innerHTML = "Sent message " + message;
+    const url = asJson? "http://localhost:3000/message" : "http://localhost:3000/messagePlainText";
+    fetch(url, {
       method: 'POST',
-      body: JSON.stringify({ message }),
+      body: asJson? JSON.stringify({ message }) : message,
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": asJson? "application/json" : "text/plain",
       },
-    }).then(resp => 
-      fetch("http://localhost:3000/message").then(resp => resp.json()).then(resp => {
-        document.getElementById("response").innerHTML=resp;
-    }));
+    }).then(resp => {
+      document.getElementById("responseDebug").innerHTML = `Message ${message} returned ${resp.status}`;
+      fetch(messageListUrl).then(resp => resp.json()).then(resp => {
+        document.getElementById("response").innerHTML=createResponseElementList(resp);
+    })});
   }
 </script>
 <div>
@@ -22,8 +50,16 @@
   <br/>
   <br/>
   <input id="inputMessage" type="text" placeholder="Type a message"/>
-  <button onclick="submitMessage()">Submit Message</button>
+  <button onclick="submitMessage(false)">Submit Message as Plain Text</button>
+  <button onclick="submitMessage(true)">Submit Message as JSON</button>
   <br/>
   <br/>
-  <div id="response"></div>
+  <fieldset>
+    <legend>All Messages from Server</legend>
+    <div id="response"></div>
+  </fieldset>
+  <br/>
+  <br/>
+  <div id="responseDebug"></div>
+
 </div>

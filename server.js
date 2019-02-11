@@ -7,10 +7,11 @@ const messages = ['hi there'];
 
 server.use(express.static('.'));
 
-server.options('*', cors()) // allow preflight requests
+const accessControlAllowedOrigin = 'http://127.0.0.1:8080';
+server.options(accessControlAllowedOrigin, cors()) // allow preflight requests
 server.use(cors({
   methods: ['GET', 'POST',],
-  origin: 'http://127.0.0.1:8080',
+  origin: accessControlAllowedOrigin,
 }));
 
 server.use(bodyParser.urlencoded({
@@ -24,8 +25,15 @@ server.get('/message', (req, res) => {
 });
 
 server.post('/message', (req, res) => {
-  console.log('adding ', req.body.message);
+  console.log('/message adding ', req.body.message);
   messages.push(req.body.message);
+  res.status(201);
+  res.send();
+});
+
+server.post('/messagePlainText', bodyParser.text(), (req, res) => {
+  console.log('/messagePlainText adding ', req.body);
+  messages.push(req.body);
   res.status(201);
   res.send();
 });
