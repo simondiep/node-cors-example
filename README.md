@@ -4,17 +4,26 @@ A demo of the effect of setting a CORS allowed origin response header in a servi
 
 ## Steps
 
+(Same Origin)
+
 In terminal 1,
 ```
 npm i
 npm run start-server
 ```
+- Open the web app at http://localhost:3000/
+- Submit a few messages
+- Notice that the web app works as you'd expect
+
+(Allowed external origin)
 
 In terminal 2,
 - `npm run start-web-app`
 - Open the web app at http://127.0.0.1:8080/
 - Submit a few messages
 - Notice that the web app works as you'd expect
+
+(External origin not in allowed list)
 
 In terminal 3,
 - `npm run start-web-app-blocked`
@@ -26,6 +35,7 @@ In terminal 3,
 ## Recap
 
 CORS allows you to access a resource outside of your current browsed domain.
+Without CORS enabled, you would only be able to access the Node API directly at its hosted domain (localhost:3000).
 
 Setting a specific Access-Control-Allow-Origin in your service will prevent a *browser* request from displaying a response from your service.  It does not prevent the execution of a request.
 
